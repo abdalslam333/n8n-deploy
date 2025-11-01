@@ -1,9 +1,11 @@
-# استخدم صورة n8n الرسمية
+# استخدم الصورة الرسمية لـ n8n (مبنية على Alpine)
 FROM n8nio/n8n:latest
 
-# تثبيت tini بشكل يدوي داخل الحاوية
+# تفعيل المستخدم الجذر مؤقتاً لتثبيت tini
 USER root
-RUN apt-get update && apt-get install -y tini && apt-get clean
+
+# تثبيت tini باستخدام apk بدلاً من apt-get
+RUN apk update && apk add --no-cache tini
 
 # تعيين المنطقة الزمنية
 ENV GENERIC_TIMEZONE=Asia/Riyadh
@@ -21,15 +23,15 @@ ENV WEBHOOK_URL=https://n8n.sdt-sa.com/
 # مفتاح التشفير
 ENV N8N_ENCRYPTION_KEY=thisIsASecretKey123
 
-# بيئة الإنتاج
+# تفعيل بيئة الإنتاج
 ENV NODE_ENV=production
-
-# تعيين المستخدم مجددًا بعد التثبيت
-USER node
 
 # المنفذ
 EXPOSE 5678
 
+# إعادة المستخدم الافتراضي
+USER node
+
 # أمر التشغيل
-ENTRYPOINT ["/usr/bin/tini", "--"]
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["n8n", "start"]
