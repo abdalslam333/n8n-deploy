@@ -25,5 +25,5 @@ ENV NODE_ENV=production
 EXPOSE 5678
 
 # أمر التشغيل
-CMD ["tini", "--", "n8n", "start"]
+CMD ["/tini", "--", "n8n", "start"]
 
